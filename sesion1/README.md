@@ -91,6 +91,10 @@ UEFI -> GPT（EFIブートローダー） -> Kernel -> OS
 BIOS -> MBR -> ブートローダー -> Kernel -> OS
 ```
 
+### Reference
+https://jp.easeus.com/partition-manager/uefi-bios-differences.html
+
+
 ## Cで書かれたEFIプログラムをコンパイルしてQEMUで起動
 
 ### コンパイラとリンカの準備
