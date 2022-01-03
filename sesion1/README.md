@@ -20,7 +20,7 @@ macでmkfs.fat使うために必要
 brew install dosfstools
 ```
 
-###　PATHに追加
+### PATHに追加
 
 ```
 vi ~/.zshrc
@@ -60,4 +60,54 @@ UEFIブート
 
 ```
 $ qemu-system-x86_64 -drive if=pflash,file=OVMF_CODE.fd -drive if=pflash,file=OVMF_VARS.fd -hda disk.img
+```
+
+## Cで書かれたEFIプログラムをコンパイルしてQEMUで起動
+
+### コンパイラとリンカの準備
+
+clangは既に入っていた（xcodeインストール時になんかにインストールされたっぽい）
+
+```
+brew install llvm nasm
+```
+
+### PATHに追加
+
+```
+vi ~/.zshrc
+
+export PATH=/usr/local/Cellar/llvm/12.0.1/bin:$PATH
+```
+
+### サンプルのCのソースダウンロード
+
+```
+$ curl -O https://raw.githubusercontent.com/uchan-nos/mikanos-build/master/day01/c/hello.c
+```
+
+### Cのソースコンパイル
+
+```
+$ clang -target x86_64-pc-win32-coff -mno-red-zone -fno-stack-protector -fshort-wchar -Wall -c hello.c
+```
+
+### コンパイルしたものをリンク
+
+```
+$ lld-link /subsystem:efi_application /entry:EfiMain /out:hello.efi hello.o
+```
+
+### QEMUの起動
+
+「バイナリからQEMUで起動」同様のやり方で起動
+
+以下方法で短縮可能
+
+```
+$ cd && git clone -b karaage https://github.com/karaage0703/mikanos-build osbook
+```
+
+```
+$ ~/osbook/devenv/run_qemu.sh hello.efi
 ```
