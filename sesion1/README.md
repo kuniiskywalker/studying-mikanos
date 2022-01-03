@@ -121,11 +121,17 @@ $ curl -O https://raw.githubusercontent.com/uchan-nos/mikanos-build/master/day01
 
 ### Cのソースコンパイル
 
+通常は直接ELF形式のファイルを出力するが、lld-linkがCOFF形式を要求するので、```x86_64-pc-win32-coff```を指定してCOFF形式のファイルを出力。
+```hello.o```というファイルが生成される。
+
 ```
 $ clang -target x86_64-pc-win32-coff -mno-red-zone -fno-stack-protector -fshort-wchar -Wall -c hello.c
 ```
 
 ### コンパイルしたものをリンク
+
+lld-linkはPE形式の実行ファイルを生成するためのリンカ。
+```/subsystem:efi_application```を指定するとUEFI用のPEファイル（```hello.efi```）を生成してくれる。
 
 ```
 $ lld-link /subsystem:efi_application /entry:EfiMain /out:hello.efi hello.o
