@@ -44,22 +44,51 @@ $ hdiutil detach mnt
 
 ### エミュレーター起動
 
-UEFI ファームウェア
+#### UEFI ファームウェア
 
 ```
 $ curl -O https://raw.githubusercontent.com/uchan-nos/mikanos-build/master/devenv/OVMF_CODE.fd
 ```
 
-NVRAM 
+#### NVRAM 
 
 ```
 $ curl -O https://raw.githubusercontent.com/uchan-nos/mikanos-build/master/devenv/OVMF_VARS.fd
 ```
 
-UEFIブート
+#### UEFIブート
 
 ```
 $ qemu-system-x86_64 -drive if=pflash,file=OVMF_CODE.fd -drive if=pflash,file=OVMF_VARS.fd -hda disk.img
+```
+
+## memo: UEFIとBIOSの違い
+
+### UEFI
+
+1.もっと直感的なインターフェイス（マウスでも操作可能）
+2.ハードディスクの容量が2.2TBを超えても対応可能
+3.スタートアップトシャットダウンをスピードアップ
+4.遠隔診断や起動前の検査などのセキュリティ機能が追加
+5.ネットワーク機能が追加
+
+#### UEFIブートプロセス
+
+```
+UEFI -> GPT（EFIブートローダー） -> Kernel -> OS
+```
+
+### BIOS
+
+1. BIOSは、16ビットモードにしか対応してない
+2. アドレス空間も1MBのみ
+3. 同時に複数のハードウェアを制御することができないため、パソコンが起動するまでとても時間がかかる
+4. 2TB以上のディスクをサポートできない
+
+#### BIOSブートプロセス
+
+```
+BIOS -> MBR -> ブートローダー -> Kernel -> OS
 ```
 
 ## Cで書かれたEFIプログラムをコンパイルしてQEMUで起動
